@@ -25,4 +25,4 @@ def get_songs(dir):
 
 
 for song in get_songs(dir):
-    print(type(song))
+    print(song)
