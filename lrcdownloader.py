@@ -27,12 +27,15 @@ def get_songs(dir):
     return songs
 
 
-#for song in get_songs(dir):
-#    with open(song[0], 'w') as outfile:
-#        try:
-#            outfile.write(syncedlyrics.search(song[1]))
-#            print(song[1])
-#        except:
-#            print(f'some error ocured with {song[1]}')
-#
-#        time.sleep(random.randrange(10, 100)/20)
+for song in get_songs(dir):
+    lrc = syncedlyrics.search(song[1])
+
+    if lrc is not None:
+        with open(song[0], 'w') as outfile:
+            outfile.write(lrc)
+        print(f'lyrics written for {song[1]}')
+
+    else:
+        print(f'some error ocured with {song[1]}, returned {lrc}')
+
+    time.sleep(random.randrange(10, 100)/20)
