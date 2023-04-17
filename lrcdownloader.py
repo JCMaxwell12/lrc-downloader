@@ -8,8 +8,8 @@ import logging
 import argparse
 
 parser = argparse.ArgumentParser(description='Download synced lyrics (.lrc) files for songs')
-parser.add_argument('dir', default='.')
-parser.add_argument('-r', '--recursive', dest='recourse', action='store_true', required=False)
+parser.add_argument('dir', default='.', nargs='?')
+parser.add_argument('-r', '--recursive', dest='recoursive', action='store_true', required=False)
 args = parser.parse_args()
 
 logging.basicConfig(level=logging.INFO, filename='lrcdownloader.log',
@@ -48,17 +48,21 @@ def get_songs(dir, recursive):
     return songs
 
 
-dir = os.path.abspath(args.dir)
-logging.info(f'Looking for files in {dir}')
-for song in get_songs(dir, args.recourse):
-    lrc = syncedlyrics.search(song[1])      # get lyrics
+try:
+    dir = os.path.abspath(args.dir)
+    logging.info(f'Looking for files in {dir}')
 
-    if lrc is not None:
-        with open(song[0], 'w') as outfile:
-            outfile.write(lrc)
-        logging.info(f'lyrics written for {song[1]}')
+    for song in get_songs(dir, args.recoursive):
+        lrc = syncedlyrics.search(song[1])      # get lyrics
 
-    else:
-        logging.error(f'{song[1]}, returned {lrc}')
+        if lrc is not None:
+            with open(song[0], 'w') as outfile: outfile.write(lrc)
+            logging.info(f'lyrics written for {song[1]}')
 
-    time.sleep(random.randrange(10, 100)/20)
+        else:
+            logging.error(f'{song[1]}, returned {lrc}')
+
+        time.sleep(random.randrange(10, 100)/20)
+
+except Exception as e:
+    logging.exception(f'An error occurred while running the script: {str(e)}')
