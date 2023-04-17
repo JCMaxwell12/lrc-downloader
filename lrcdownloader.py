@@ -7,8 +7,8 @@ import random
 import logging
 import argparse
 
-parser = argparse.ArgumentParser(description='Download synced lyrics (.lrc) flies for songs')
-parser.add_argument('dir', help='Directory to look music files for', default='.')
+parser = argparse.ArgumentParser(description='Download synced lyrics (.lrc) files for songs')
+parser.add_argument('dir', default='.')
 parser.add_argument('-r', '--recursive', dest='recourse', action='store_true')
 args = parser.parse_args()
 
@@ -16,21 +16,35 @@ logging.basicConfig(level=logging.INFO, filename='lrcdownloader.log',
                     filemode='w', format='%(levelname)s %(message)s')
 
 
-def get_songs(dir):
+def get_songs(dir, recursive):
     """ return list of songs in the directory, only for audio files,
     songs that already have a .lrc file are omitted"""
     songs = list()
-    for root, dirs, files in os.walk(dir):
-        for file in files:
-            ext = os.path.splitext(file)[1]         # extension
+    if recursive:
+        for root, dirs, files in os.walk(dir):
+            for file in files:
+                ext = os.path.splitext(file)[1]         # extension
 
-            if ext == '.mp3' or ext == '.flac':     # audio files
-                song_name = os.path.splitext(file)[0]
-                lrc_file = song_name + '.lrc'
-                lrc_file = os.path.join(root, lrc_file)
+                if ext == '.mp3' or ext == '.flac':     # audio files
+                    song_name = os.path.splitext(file)[0]
+                    lrc_file = song_name + '.lrc'
+                    lrc_file = os.path.join(root, lrc_file)
 
-                if not os.path.exists(lrc_file):    # check if lrc file exists
-                    songs.append((lrc_file, song_name))
+                    if not os.path.exists(lrc_file):    # check if lrc file exists
+                        songs.append((lrc_file, song_name))
+    else:
+        for file in os.path:
+            if os.path.isfile(file):
+                ext = os.path.splitext(file)[1]         # extension
+
+                if ext == '.mp3' or ext == '.flac':     # audio files
+                    song_name = os.path.splitext(file)[0]
+                    lrc_file = song_name + '.lrc'
+                    lrc_file = os.path.join(root, lrc_file)
+
+                    if not os.path.exists(lrc_file):    # check if lrc file exists
+                        songs.append((lrc_file, song_name))
+
     logging.info(f'Songs to get lrc files for:\n{songs}')
     return songs
 
