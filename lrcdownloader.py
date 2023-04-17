@@ -4,6 +4,10 @@ import os
 import syncedlyrics
 import time
 import random
+import logging
+
+logging.basicConfig(level=logging.INFO,
+                    filename='lrcdownloader.log')
 
 dir = '/home/rhea/Music/'
 
@@ -23,19 +27,19 @@ def get_songs(dir):
 
                 if not os.path.exists(lrc_file):    # check if lrc file exists
                     songs.append((lrc_file, song_name))
-
+    logging.info(f'Songs to get lrc files for:\n{songs}')
     return songs
 
 
 for song in get_songs(dir):
-    lrc = syncedlyrics.search(song[1])
+    lrc = syncedlyrics.search(song[1])      # get lyrics
 
     if lrc is not None:
         with open(song[0], 'w') as outfile:
             outfile.write(lrc)
-        print(f'lyrics written for {song[1]}')
+        logging.info(f'lyrics written for {song[1]}')
 
     else:
-        print(f'some error ocured with {song[1]}, returned {lrc}')
+        logging.error(f'{song[1]}, returned {lrc}')
 
     time.sleep(random.randrange(10, 100)/20)
