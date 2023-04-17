@@ -5,11 +5,15 @@ import syncedlyrics
 import time
 import random
 import logging
+import argparse
 
-logging.basicConfig(level=logging.INFO,
-                    filename='lrcdownloader.log')
+parser = argparse.ArgumentParser(description='Download synced lyrics (.lrc) flies for songs')
+parser.add_argument('dir', help='Directory to look music files for', default='.')
+parser.add_argument('-r', '--recursive', dest='recourse', action='store_true')
+args = parser.parse_args()
 
-dir = '/home/rhea/Music/'
+logging.basicConfig(level=logging.INFO, filename='lrcdownloader.log',
+                    filemode='w', format='%(levelname)s %(message)s')
 
 
 def get_songs(dir):
@@ -31,6 +35,8 @@ def get_songs(dir):
     return songs
 
 
+dir = os.path.abspath(args.dir)
+logging.info(f'Looking for files in {dir}')
 for song in get_songs(dir):
     lrc = syncedlyrics.search(song[1])      # get lyrics
 
