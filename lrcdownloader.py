@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
 import os
+import syncedlyrics
+import time
+import random
 
-dir = '/home/rc/media0/audio/'
+dir = '/home/rhea/Music/'
 
 
 def get_songs(dir):
@@ -18,11 +21,18 @@ def get_songs(dir):
                 lrc_file = song_name + '.lrc'
                 lrc_file = os.path.join(root, lrc_file)
 
-                if not os.path.isfile(lrc_file):    # check if lrc file exists
+                if not os.path.exists(lrc_file):    # check if lrc file exists
                     songs.append((lrc_file, song_name))
 
     return songs
 
 
-for song in get_songs(dir):
-    print(song)
+#for song in get_songs(dir):
+#    with open(song[0], 'w') as outfile:
+#        try:
+#            outfile.write(syncedlyrics.search(song[1]))
+#            print(song[1])
+#        except:
+#            print(f'some error ocured with {song[1]}')
+#
+#        time.sleep(random.randrange(10, 100)/20)
