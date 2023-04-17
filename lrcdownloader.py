@@ -9,7 +9,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Download synced lyrics (.lrc) files for songs')
 parser.add_argument('dir', default='.')
-parser.add_argument('-r', '--recursive', dest='recourse', action='store_true')
+parser.add_argument('-r', '--recursive', dest='recourse', action='store_true', required=False)
 args = parser.parse_args()
 
 logging.basicConfig(level=logging.INFO, filename='lrcdownloader.log',
@@ -33,14 +33,13 @@ def get_songs(dir, recursive):
                     if not os.path.exists(lrc_file):    # check if lrc file exists
                         songs.append((lrc_file, song_name))
     else:
-        for file in os.path:
+        for file in os.listdir(dir):
             if os.path.isfile(file):
                 ext = os.path.splitext(file)[1]         # extension
 
                 if ext == '.mp3' or ext == '.flac':     # audio files
                     song_name = os.path.splitext(file)[0]
                     lrc_file = song_name + '.lrc'
-                    lrc_file = os.path.join(root, lrc_file)
 
                     if not os.path.exists(lrc_file):    # check if lrc file exists
                         songs.append((lrc_file, song_name))
@@ -51,7 +50,7 @@ def get_songs(dir, recursive):
 
 dir = os.path.abspath(args.dir)
 logging.info(f'Looking for files in {dir}')
-for song in get_songs(dir):
+for song in get_songs(dir, args.recourse):
     lrc = syncedlyrics.search(song[1])      # get lyrics
 
     if lrc is not None:
